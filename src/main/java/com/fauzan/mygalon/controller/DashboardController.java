@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -19,7 +21,6 @@ import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -27,6 +28,7 @@ public class DashboardController {
     private int pendapatan;
     private int pengantaran;
     private int jumlahTransaksi;
+    private String username;
 
     @FXML
     private Label pendapatanLabel;
@@ -70,14 +72,25 @@ public class DashboardController {
     @FXML
     private TableColumn<Transaksi, String> colMetode;
 
+    @FXML
+    private TableColumn<Transaksi, Integer> colHargaGalon;
+
+    @FXML
+    private TableColumn<Transaksi, Integer> colHargaKirim;
+
     ObservableList<Transaksi> list =
             FXCollections.observableArrayList();
 
-    public void  setUsernameLabel(String nama) {
-        usernameLabel.setText(nama);
+    @FXML
+    private LineChart<String, Number> lineChart;
+
+    //set username
+    public void setUsername(String nama) {
+        username = nama;
+        usernameLabel.setText(username);
     }
 
-//    ambil transaksi hari ini
+    //ambil transaksi hari ini
     public void setJumlahTransaksi(){
 
 //            ambil tanggal hari ini
@@ -107,7 +120,7 @@ public class DashboardController {
         }
     }
 
-//    ambil jumlah pengataran yang harus diproses
+    //ambil jumlah pengataran yang harus diproses
     public void setPengantaran(){
 
         try(
@@ -131,6 +144,18 @@ public class DashboardController {
     }
 
     public void  initialize(){
+
+//        Line Chart
+        XYChart.Series<String, Number> dataChart = new XYChart.Series<>();
+
+        dataChart.setName("Transaksi");
+        dataChart.getData().add(new XYChart.Data<>("Senin", 10));
+        dataChart.getData().add(new XYChart.Data<>("Selasa", 15));
+        dataChart.getData().add(new XYChart.Data<>("Rabu", 7));
+        dataChart.getData().add(new XYChart.Data<>("Kamis", 20));
+
+        lineChart.getData().add(dataChart);
+
 //        panggil setter
         setPengantaran();
         setJumlahTransaksi();
@@ -169,6 +194,14 @@ public class DashboardController {
                 new PropertyValueFactory<>("alamatPengantaran")
         );
 
+        colHargaGalon.setCellValueFactory(
+                new PropertyValueFactory<>("hargaGalon")
+        );
+
+        colHargaKirim.setCellValueFactory(
+                new PropertyValueFactory<>("hargaKirim")
+        );
+
         colStatus.setCellValueFactory(
                 new PropertyValueFactory<>("statusTransaksi")
         );
@@ -191,13 +224,16 @@ public class DashboardController {
                         data.getInt("idTransaksi"),
                         data.getString("namaPembeli"),
                         data.getInt("jumlahGalon"),
+                        data.getInt("hargaGalon"),
                         data.getString("namaKurir"),
                         data.getString("metodePengiriman"),
+                        data.getInt("hargaKirim"),
                         data.getString("alamatPengantaran"),
                         data.getString("tanggalTransaksi"),
                         data.getInt("totalTransaksi"),
                         data.getString("statusTransaksi")
                 );
+
 //                masukan ke list
                 list.add(transaksi);
                 pendapatan += transaksi.getTotalTransaksi();
@@ -224,14 +260,43 @@ public class DashboardController {
 
             Parent root = loader.load();
 
+            TransaksiController controller =
+                    loader.getController();
+
+            controller.setUsername(username);
+
+
             Stage stage = (Stage) tableTransaksi.getScene().getWindow();
 
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.getScene().setRoot(root);
 
 
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void bukaHarga(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/fauzan/mygalon/harga.fxml"));
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) tableTransaksi.getScene().getWindow();
+
+            HargaController controller =
+                    loader.getController();
+
+            controller.setUsername(username);
+
+            stage.getScene().setRoot(root);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void keluar(){
+        System.exit(0);
     }
 }

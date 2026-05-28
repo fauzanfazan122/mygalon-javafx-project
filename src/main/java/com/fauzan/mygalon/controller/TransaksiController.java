@@ -1,6 +1,7 @@
 package com.fauzan.mygalon.controller;
 
 import com.fauzan.mygalon.DatabaseConn;
+import com.fauzan.mygalon.model.Harga;
 import com.fauzan.mygalon.model.Transaksi;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -8,20 +9,27 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.ParallelCamera;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.sql.*;
+import java.util.Optional;
 
 public class TransaksiController {
-//    sementara
-    private final int hargaGalon = 5000;
-    private final int hargaAntar = 1000;
 
+    private int hargaGalon;
+    private int hargaKirim;
+
+    //ambil harga bawaan tabel untuk update
+    private  int baseHargaGalon;
+    private  int baseHargaKirim;
+
+    //harga
+    Harga harga;
+
+    private String username;
     private int totalTransaksi = 0;
 
 //    selected row tabel
@@ -84,6 +92,12 @@ public class TransaksiController {
 
     @FXML
     private TableColumn<Transaksi, String> colMetode;
+
+    @FXML
+    private TableColumn<Transaksi, Integer> colHargaGalon;
+
+    @FXML
+    private TableColumn<Transaksi, Integer> colHargaKirim;
 
 //    tombol update
     @FXML
@@ -149,6 +163,14 @@ public class TransaksiController {
                 new PropertyValueFactory<>("metodePengiriman")
         );
 
+        colHargaGalon.setCellValueFactory(
+                new PropertyValueFactory<>("hargaGalon")
+        );
+
+        colHargaKirim.setCellValueFactory(
+                new PropertyValueFactory<>("hargaKirim")
+        );
+
         try (
                 Connection connection = DatabaseConn.connect();
                 Statement stmt = connection.createStatement();
@@ -162,8 +184,10 @@ public class TransaksiController {
                         data.getInt("idTransaksi"),
                         data.getString("namaPembeli"),
                         data.getInt("jumlahGalon"),
+                        data.getInt("hargaGalon"),
                         data.getString("namaKurir"),
                         data.getString("metodePengiriman"),
+                        data.getInt("hargaKirim"),
                         data.getString("alamatPengantaran"),
                         data.getString("tanggalTransaksi"),
                         data.getInt("totalTransaksi"),
@@ -181,25 +205,116 @@ public class TransaksiController {
         }
     }
 
-    public void bukaDashboard(){
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/fauzan/mygalon/dashboard.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) inputNama.getScene().getWindow();
-
-            Scene scene = new Scene(root);
-
-            stage.setScene(scene);
+    public void getHarga(){
+        try(
+                Connection connection = DatabaseConn.connect();
+                Statement stmt = connection.createStatement();
+                ResultSet data = stmt.executeQuery("SELECT * FROM harga");
+        ){
+            while (data.next()){
+                harga = new Harga(
+                        data.getInt("idHarga"),
+                        data.getInt("hargaGalon"),
+                        data.getInt("hargaKirim")
+                );
+            }
         }
         catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void initialize(){
-        totalLabel.setText("" + totalTransaksi);
+    //set username
+    public void setUsername(String nama){
+        this.username = nama;
+    }
 
+    public void bukaDashboard(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/fauzan/mygalon/dashboard.fxml"));
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) inputNama.getScene().getWindow();
+
+            DashboardController controller =
+                    loader.getController();
+
+            controller.setUsername(username);
+
+            stage.getScene().setRoot(root);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void bukaHarga(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/fauzan/mygalon/harga.fxml"));
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) inputNama.getScene().getWindow();
+
+            HargaController controller =
+                    loader.getController();
+
+            controller.setUsername(username);
+
+            stage.getScene().setRoot(root);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTotalLabel(){
+        if(inputJumlahGalon.getText().isEmpty() || !inputJumlahGalon.getText().matches("\\d+")) {
+            totalLabel.setText("Rp 0");
+            return;
+        }
+
+        int jumlahGalon = Integer.parseInt(inputJumlahGalon.getText());
+
+        int currentHargaGalon;
+        int currentHargaKirim;
+
+        if(modeEdit){
+            currentHargaGalon = baseHargaGalon;
+            currentHargaKirim = baseHargaKirim;
+        }
+        else {
+            currentHargaGalon = hargaGalon;
+            currentHargaKirim = hargaKirim;
+        }
+
+        if(inputMetode.getValue().equals("diantar")){
+            totalTransaksi = jumlahGalon * (currentHargaGalon + currentHargaKirim);
+        }
+        else {
+            totalTransaksi = jumlahGalon * currentHargaGalon;
+        }
+
+        totalLabel.setText("Rp " + totalTransaksi);
+    }
+
+    public void initialize(){
+
+        //ambil harga
+        getHarga();
+        hargaGalon = harga.getHargaGalon();
+        hargaKirim = harga.getHargaKirim();
+
+        inputJumlahGalon.textProperty().addListener(
+                ((observable, oldValue, newValue) ->
+                        updateTotalLabel())
+        );
+
+        inputMetode.valueProperty().addListener(
+                ((observable, oldValue, newValue) ->
+                        updateTotalLabel())
+        );
 
         inputStatus.getItems().addAll(
                 "diproses",
@@ -237,16 +352,28 @@ public class TransaksiController {
         }
     }
 
-    //    select tabel row
+    //select tabel row
     public void getTableRow(){
         tableTransaksi.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, selectedData) -> {
 
                     if (selectedData != null) {
                         selectedId = selectedData.getIdTransaksi();
+
+                        modeEdit = true;
+
+//                        ambil harga sesuai tabel
+                        baseHargaGalon = selectedData.getHargaGalon();
+                        baseHargaKirim = selectedData.getHargaKirim();
+
                         inputNama.setText(
                                 selectedData.getNamaPembeli()
                         );
+
+                        inputMetode.setValue(
+                                selectedData.getMetodePengiriman()
+                        );
+
                         inputJumlahGalon.setText(
                                 String.valueOf(selectedData.getJumlahGalon())
                         );
@@ -256,31 +383,26 @@ public class TransaksiController {
                         inputAlamat.setText(
                                 selectedData.getAlamatPengantaran()
                         );
-                        inputMetode.setValue(
-                                selectedData.getMetodePengiriman()
-                        );
+
                         inputStatus.setValue(
                                 selectedData.getStatusTransaksi()
                         );
-                        modeEdit = true;
+
+                        // paksa hitung ulang
+                        updateTotalLabel();
+
                         setKirimButton();
                     }
                 });
     }
 
-
-    public void tambahTransaksi(){
-
-//        validasi
-        if(
-                inputJumlahGalon.getText().isEmpty() ||
-                inputMetode.getValue() == null ||
-                inputStatus.getValue() == null
-        ){
+    public boolean validasi(){
+        if(inputJumlahGalon.getText().isEmpty()){
             labelStatus.setVisible(true);
             labelStatus.setManaged(true);
-            labelStatus.setText("Error! Kolom Jumlah galon, Metode, Status harus diisi");
-            return;
+            labelStatus.setText("Error! Kolom Jumlah galon harus diisi!");
+            labelStatus.getStyleClass().setAll("status-error");
+            return false;
         }
 
 //        validasi inputJumlahGalon
@@ -288,8 +410,20 @@ public class TransaksiController {
             labelStatus.setVisible(true);
             labelStatus.setManaged(true);
             labelStatus.setText("Error! Jumlah galon harus angka");
+            labelStatus.getStyleClass().setAll("status-error");
+            return false;
+        }
+
+        return true;
+    }
+
+    public void tambahTransaksi(){
+
+//        validasi
+        if(!validasi()){
             return;
         }
+
 //        ambil nilai
         String status = inputStatus.getValue();
         String metode = inputMetode.getValue();
@@ -299,7 +433,7 @@ public class TransaksiController {
 
 //        hitung harga
         if(metode.equals("diantar")){
-            totalTransaksi = jumlahGalon * (hargaGalon + hargaAntar);
+            totalTransaksi = jumlahGalon * (hargaGalon + hargaKirim);
         }
         else {
             totalTransaksi = jumlahGalon * hargaGalon;
@@ -308,8 +442,10 @@ public class TransaksiController {
         Transaksi transaksi = new Transaksi(
                 inputNama.getText(),
                 jumlahGalon,
+                hargaGalon,
                 inputKurir.getText(),
                 metode,
+                hargaKirim,
                 inputAlamat.getText(),
                 totalTransaksi,
                 status
@@ -320,12 +456,14 @@ public class TransaksiController {
                 INSERT INTO transaksi (
                     namaPembeli,
                     jumlahGalon,
+                    hargaGalon,
                     namaKurir,
                     metodePengiriman,
+                    hargaKirim,
                     alamatPengantaran,
                     totalTransaksi,
                     statusTransaksi
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try(
@@ -340,19 +478,25 @@ public class TransaksiController {
             statement.setInt(2,
                     transaksi.getJumlahGalon());
 
-            statement.setString(3,
-                    transaksi.getNamaKurir());
+            statement.setInt(3,
+                    transaksi.getHargaGalon());
 
             statement.setString(4,
-                    transaksi.getMetodePengiriman());
+                    transaksi.getNamaKurir());
 
             statement.setString(5,
-                    transaksi.getAlamatPengantaran());
+                    transaksi.getMetodePengiriman());
 
             statement.setInt(6,
-                    transaksi.getTotalTransaksi());
+                    transaksi.getHargaKirim());
 
             statement.setString(7,
+                    transaksi.getAlamatPengantaran());
+
+            statement.setInt(8,
+                    transaksi.getTotalTransaksi());
+
+            statement.setString(9,
                     transaksi.getStatusTransaksi());
 
             statement.executeUpdate();
@@ -362,6 +506,9 @@ public class TransaksiController {
             loadTable();
 
 //            status
+            labelStatus.getStyleClass().setAll("status-success");
+            labelStatus.setManaged(true);
+            labelStatus.setVisible(true);
             labelStatus.setText("Succes! Transaksi berhasil di tambahkan!");
 
         } catch (SQLException e) {
@@ -375,7 +522,15 @@ public class TransaksiController {
     public void updateTransaksi(){
 
         if(selectedId == -1){
-            labelStatus.setText("Pilih data dulu!");
+            labelStatus.getStyleClass().setAll("status-error");
+            labelStatus.setManaged(true);
+            labelStatus.setVisible(true);
+            labelStatus.setText("Error! Silakan pilih data dulu!");
+            return;
+        }
+
+        //validasi
+        if(!validasi()){
             return;
         }
 
@@ -384,8 +539,10 @@ public class TransaksiController {
             SET
                 namaPembeli = ?,
                 jumlahGalon = ?,
+                hargaGalon = ?,
                 namaKurir = ?,
                 metodePengiriman = ?,
+                hargaKirim = ?,
                 alamatPengantaran = ?,
                 totalTransaksi = ?,
                 statusTransaksi = ?
@@ -408,11 +565,11 @@ public class TransaksiController {
             if(metode.equals("diantar")){
                 totalTransaksi =
                         jumlahGalon *
-                                (hargaGalon + hargaAntar);
+                                (baseHargaGalon + baseHargaKirim);
             }
             else{
                 totalTransaksi =
-                        jumlahGalon * hargaGalon;
+                        jumlahGalon * baseHargaGalon;
             }
 
             statement.setString(1,
@@ -421,31 +578,39 @@ public class TransaksiController {
             statement.setInt(2,
                     jumlahGalon);
 
-            statement.setString(3,
-                    inputKurir.getText());
+            statement.setInt(3,
+                    baseHargaGalon);
 
             statement.setString(4,
-                    metode);
+                    inputKurir.getText());
 
             statement.setString(5,
-                    inputAlamat.getText());
+                    metode);
 
             statement.setInt(6,
-                    totalTransaksi);
+                    baseHargaKirim);
+
 
             statement.setString(7,
-                    inputStatus.getValue());
+                    inputAlamat.getText());
 
             statement.setInt(8,
+                    totalTransaksi);
+
+            statement.setString(9,
+                    inputStatus.getValue());
+
+            statement.setInt(10,
                     selectedId);
 
             statement.executeUpdate();
 
             loadTable();
 
-            labelStatus.setText(
-                    "Data berhasil diupdate!"
-            );
+            labelStatus.getStyleClass().setAll("status-success");
+            labelStatus.setManaged(true);
+            labelStatus.setVisible(true);
+            labelStatus.setText("Succes! Transaksi berhasil di perbarui!");
 
         } catch (Exception e){
             e.printStackTrace();
@@ -453,20 +618,49 @@ public class TransaksiController {
     }
 
     public void deleteTransaksi(){
+//        alert
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+        alert.setTitle("Konfirmasi Delete");
+        alert.setHeaderText("Yakin ingin menghapus Transaksi ini?");
+        alert.setContentText(
+                "Data yang dihapus tidak bisa dikembalikan."
+        );
+
+        DialogPane dialogPane = alert.getDialogPane();
+
+        dialogPane.getStylesheets().add(
+                getClass()
+                        .getResource("/com/fauzan/mygalon/style.css")
+                        .toExternalForm()
+        );
+
+        dialogPane.getStyleClass().add("custom-alert");
+
+        Optional<ButtonType> hasil = alert.showAndWait();
+
         String sql = "DELETE FROM transaksi WHERE idTransaksi = ?";
-        try (
-                Connection connection = DatabaseConn.connect();
-                PreparedStatement stmt = connection.prepareStatement(sql);
-                ){
-            stmt.setInt(1, selectedId);
-            stmt.executeUpdate();
 
-            loadTable();
-            cancelButton();
 
-        }
-        catch (SQLException e){
-            e.printStackTrace();
+        if (hasil.isPresent() && hasil.get() == ButtonType.OK){
+            try (
+                    Connection connection = DatabaseConn.connect();
+                    PreparedStatement stmt = connection.prepareStatement(sql);
+            ){
+                stmt.setInt(1, selectedId);
+                stmt.executeUpdate();
+                loadTable();
+                cancelButton();
+
+                labelStatus.getStyleClass().setAll("status-success");
+                labelStatus.setManaged(true);
+                labelStatus.setVisible(true);
+                labelStatus.setText("Succes! Transaksi berhasil di hapus!");
+
+            }
+            catch (SQLException e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -493,6 +687,10 @@ public class TransaksiController {
         inputStatus.setValue("diproses");
 
         selectedId = -1;
+
+        baseHargaGalon = 0;
+
+        baseHargaKirim = 0;
 
         tableTransaksi.getSelectionModel().clearSelection();
 

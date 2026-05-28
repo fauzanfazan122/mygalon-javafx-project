@@ -3,6 +3,8 @@ package com.fauzan.mygalon.model;
 public class Transaksi {
     private int idTransaksi;
     private int jumlahGalon;
+    private int hargaGalon;
+    private int hargaKirim;
     private int totalTransaksi;
     private String namaPembeli;
     private String namaKurir;
@@ -11,18 +13,22 @@ public class Transaksi {
     private String alamatPengantaran;
     private String statusTransaksi;
 
-//    construktor insert
+    //    construktor insert
     public Transaksi (
             String namaPembeli,
             int jumlahGalon,
+            int hargaGalon,
             String namaKurir,
             String metodePengiriman,
+            int hargaKirim,
             String alamatPengantaran,
             int totalTransaksi,
             String statusTransaksi
     ){
         this.namaPembeli = namaPembeli;
         this.jumlahGalon = jumlahGalon;
+        this.hargaGalon = hargaGalon;
+        this.hargaKirim = hargaKirim;
         this.totalTransaksi = totalTransaksi;
         this.namaKurir = namaKurir;
         this.metodePengiriman = metodePengiriman;
@@ -35,8 +41,10 @@ public class Transaksi {
             int idTransaksi,
             String namaPembeli,
             int jumlahGalon,
+            int hargaGalon,
             String namaKurir,
             String metodePengiriman,
+            int hargaKirim,
             String alamatPengantaran,
             String tanggalTransaksi,
             int totalTransaksi,
@@ -47,6 +55,8 @@ public class Transaksi {
         this.jumlahGalon = jumlahGalon;
         this.tanggalTransaksi = tanggalTransaksi;
         this.totalTransaksi = totalTransaksi;
+        this.hargaGalon = hargaGalon;
+        this.hargaKirim = hargaKirim;
         this.namaKurir = namaKurir;
         this.metodePengiriman = metodePengiriman;
         this.alamatPengantaran = alamatPengantaran;
@@ -73,6 +83,10 @@ public class Transaksi {
     public String getNamaKurir() {
         return namaKurir;
     }
+
+    public int getHargaGalon() {return hargaGalon;}
+
+    public int getHargaKirim() {return hargaKirim;}
 
     public String getMetodePengiriman() {
         return metodePengiriman;

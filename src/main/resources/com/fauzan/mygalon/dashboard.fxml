@@ -17,6 +17,10 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import java.lang.String?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             prefWidth="1000"
             prefHeight="650"
@@ -63,7 +67,8 @@
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button styleClass="btn-logout">
+                <Button onAction="#keluar"
+                        styleClass="btn-logout">
                     <text>Logout</text>
                     <graphic>
                         <FontIcon iconLiteral="fas-sign-out-alt" iconColor="white"/>
@@ -80,12 +85,21 @@
               styleClass="sidebar">
 
             <Button text="Dashboard"
-                    maxWidth="Infinity"
-                    styleClass="sidebar-button"/>
+                    maxWidth="Infinity">
+                <styleClass>
+                    <String fx:value="sidebar-button"/>
+                    <String fx:value="active"/>
+                </styleClass>
+            </Button>
 
             <Button text="Transaksi"
                     onAction="#bukaTransaksi"
                     maxWidth="Infinity"
+                    styleClass="sidebar-button"/>
+
+            <Button text="Setting Harga"
+                    maxWidth="Infinity"
+                    onAction="#bukaHarga"
                     styleClass="sidebar-button"/>
 
             <Button text="Laporan"
@@ -149,60 +163,103 @@
                         </VBox>
                     </HBox>
 
-                    <!-- tambah transaksi -->
-                    <Button prefWidth="180"
-                            graphicTextGap="8"
-                            styleClass="btn-input"
-                            onAction="#bukaTransaksi">
-                        <text>Tambah Transaksi</text>
-                        <graphic>
-                            <FontIcon iconLiteral="fas-plus" iconColor="white"/>
-                        </graphic>
-                    </Button>
+                    <HBox spacing="16">
 
-                    <TableView fx:id="tableTransaksi"
-                               prefHeight="400"
-                               prefWidth="800">
+                        <!-- tambah transaksi -->
+                        <Button prefWidth="180"
+                                graphicTextGap="8"
+                                styleClass="btn-tambah"
+                                onAction="#bukaTransaksi">
+                            <text>Tambah Transaksi</text>
+                            <graphic>
+                                <FontIcon iconLiteral="fas-plus" iconColor="white"/>
+                            </graphic>
+                        </Button>
 
-                        <columns>
+                        <!-- edit harga -->
+                        <Button prefWidth="180"
+                                graphicTextGap="8"
+                                styleClass="btn-edit"
+                                onAction="#bukaHarga">
+                            <text>Edit Harga</text>
+                            <graphic>
+                                <FontIcon iconLiteral="fas-edit" iconColor="white"/>
+                            </graphic>
+                        </Button>
+                    </HBox>
 
-                            <TableColumn fx:id="colNum"
-                                         text="No"
-                                         prefWidth="50"/>
+                    <VBox styleClass="dashboard-card">
+                        <LineChart fx:id="lineChart" title="Transaksi Mingguan">
+                            <xAxis>
+                                <CategoryAxis label="Hari" />
+                            </xAxis>
 
-                            <TableColumn fx:id="colNama"
-                                         text="Nama"
-                                         prefWidth="100"/>
+                            <yAxis>
+                                <NumberAxis label="Jumlah" />
+                            </yAxis>
+                        </LineChart>
+                    </VBox>
 
-                            <TableColumn fx:id="colJumlah"
-                                         text="Jumlah Galon"
-                                         prefWidth="50"/>
+                    <!-- TABLE -->
+                    <VBox spacing="10"
+                          styleClass="card"
+                          VBox.vgrow="ALWAYS">
 
-                            <TableColumn fx:id="colKurir"
-                                         text="Kurir"
-                                         prefWidth="100"/>
+                        <Label text="Data Transaksi"
+                               style="-fx-text-fill: #000;"/>
 
-                            <TableColumn fx:id="colMetode"
-                                         text="Metode"
-                                         prefWidth="100"/>
+                        <TableView fx:id="tableTransaksi"
+                                   prefHeight="400"
+                                   prefWidth="800">
 
-                            <TableColumn fx:id="colAlamat"
-                                         text="Alamat"
-                                         prefWidth="100"/>
+                            <columns>
 
-                            <TableColumn fx:id="colTanggal"
-                                         text="Tanggal"
-                                         prefWidth="100"/>
+                                <TableColumn fx:id="colNum"
+                                             text="No"
+                                             prefWidth="30"/>
 
-                            <TableColumn fx:id="colTotal"
-                                         text="Total"
-                                         prefWidth="100"/>
+                                <TableColumn fx:id="colNama"
+                                             text="Nama"
+                                             prefWidth="80"/>
 
-                            <TableColumn fx:id="colStatus"
-                                         text="Status"
-                                         prefWidth="100"/>
-                        </columns>
-                    </TableView>
+                                <TableColumn fx:id="colJumlah"
+                                             text="Jumlah"
+                                             prefWidth="50"/>
+
+                                <TableColumn fx:id="colHargaGalon"
+                                             text="Harga Satuan"
+                                             prefWidth="100"/>
+
+                                <TableColumn fx:id="colKurir"
+                                             text="Kurir"
+                                             prefWidth="80"/>
+
+                                <TableColumn fx:id="colMetode"
+                                             text="Metode"
+                                             prefWidth="80"/>
+
+                                <TableColumn fx:id="colHargaKirim"
+                                             text="Ongkir Satuan"
+                                             prefWidth="100"/>
+
+                                <TableColumn fx:id="colAlamat"
+                                             text="Alamat"
+                                             prefWidth="100"/>
+
+                                <TableColumn fx:id="colTanggal"
+                                             text="Tanggal"
+                                             prefWidth="100"/>
+
+                                <TableColumn fx:id="colTotal"
+                                             text="Total"
+                                             prefWidth="100"/>
+
+                                <TableColumn fx:id="colStatus"
+                                             text="Status"
+                                             prefWidth="80"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
                 </VBox>
             </content>
         </ScrollPane>

@@ -14,13 +14,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 
 
 <!--font-->
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <?import javafx.scene.control.ScrollPane?>
+<?import java.lang.String?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             prefWidth="1000"
             prefHeight="650"
@@ -89,7 +89,16 @@
                     styleClass="sidebar-button"/>
 
             <Button text="Transaksi"
+                    maxWidth="Infinity">
+                <styleClass>
+                    <String fx:value="sidebar-button"/>
+                    <String fx:value="active"/>
+                </styleClass>
+            </Button>
+
+            <Button text="Setting Harga"
                     maxWidth="Infinity"
+                    onAction="#bukaHarga"
                     styleClass="sidebar-button"/>
 
             <Button text="Laporan"
@@ -110,9 +119,9 @@
                     <!-- FORM -->
                     <VBox spacing="20"
                           prefWidth="900"
-                          styleClass="dashboard-card">
+                          styleClass="form-card">
 
-                        <Label text="Tambah Transaksi"/>
+                        <Label styleClass="form-label" text="Tambah Transaksi"/>
 
                         <!-- ROW 1 -->
                         <HBox spacing="15">
@@ -121,7 +130,7 @@
                             <VBox spacing="8"
                                   HBox.hgrow="ALWAYS">
 
-                                <Label text="Nama Pembeli"/>
+                                <Label styleClass="form-label" text="Nama Pembeli"/>
 
                                 <TextField fx:id="inputNama"
                                            styleClass="form-input"
@@ -135,7 +144,7 @@
                             <VBox spacing="8"
                                   HBox.hgrow="ALWAYS">
 
-                                <Label text="Jumlah Galon"/>
+                                <Label styleClass="form-label" text="Jumlah Galon"/>
 
                                 <TextField fx:id="inputJumlahGalon"
                                            promptText="Masukkan jumlah galon"
@@ -154,7 +163,7 @@
                             <VBox spacing="8"
                                   HBox.hgrow="ALWAYS">
 
-                                <Label text="Nama Kurir"/>
+                                <Label styleClass="form-label" text="Nama Kurir"/>
 
                                 <TextField fx:id="inputKurir"
                                            promptText="Masukkan nama kurir"
@@ -168,7 +177,7 @@
                             <VBox spacing="8"
                                   HBox.hgrow="ALWAYS">
 
-                                <Label text="Metode Pengiriman"/>
+                                <Label styleClass="form-label" text="Metode Pengiriman"/>
 
                                 <ComboBox fx:id="inputMetode"
                                           promptText="Pilih metode"
@@ -183,7 +192,7 @@
                         <!-- ROW 3 -->
                         <VBox spacing="8">
 
-                            <Label text="Alamat Pengantaran"/>
+                            <Label styleClass="form-label" text="Alamat Pengantaran"/>
 
                             <TextArea fx:id="inputAlamat"
                                       promptText="Masukkan alamat pengantaran"
@@ -200,7 +209,7 @@
                             <VBox spacing="8"
                                   HBox.hgrow="ALWAYS">
 
-                                <Label text="Status Transaksi"/>
+                                <Label styleClass="form-label" text="Status Transaksi"/>
 
                                 <ComboBox fx:id="inputStatus"
                                           promptText="Pilih status"
@@ -213,10 +222,10 @@
                             <VBox spacing="8"
                                   HBox.hgrow="ALWAYS">
 
-                                <Label text="Total Transaksi"/>
+                                <Label styleClass="form-label" text="Total Transaksi"/>
 
                                 <Label fx:id="totalLabel"
-                                       text="Rp 0"
+                                       styleClass="total-label"
                                        prefWidth="300"/>
 
                             </VBox>
@@ -253,13 +262,14 @@
 
                     </VBox>
 
+
                     <!-- TABLE -->
                     <VBox spacing="10"
                           styleClass="card"
                           VBox.vgrow="ALWAYS">
 
                         <Label text="Data Transaksi"
-                               styleClass="section-title"/>
+                               style="-fx-text-fill: #000;"/>
 
                         <TableView fx:id="tableTransaksi"
                                    prefHeight="400"
@@ -269,22 +279,30 @@
 
                                 <TableColumn fx:id="colNum"
                                              text="No"
-                                             prefWidth="50"/>
+                                             prefWidth="30"/>
 
                                 <TableColumn fx:id="colNama"
                                              text="Nama"
-                                             prefWidth="100"/>
+                                             prefWidth="80"/>
 
                                 <TableColumn fx:id="colJumlah"
-                                             text="Jumlah Galon"
+                                             text="Jumlah"
                                              prefWidth="50"/>
+
+                                <TableColumn fx:id="colHargaGalon"
+                                             text="Harga Satuan"
+                                             prefWidth="100"/>
 
                                 <TableColumn fx:id="colKurir"
                                              text="Kurir"
-                                             prefWidth="100"/>
+                                             prefWidth="80"/>
 
                                 <TableColumn fx:id="colMetode"
                                              text="Metode"
+                                             prefWidth="80"/>
+
+                                <TableColumn fx:id="colHargaKirim"
+                                             text="Ongkir Satuan"
                                              prefWidth="100"/>
 
                                 <TableColumn fx:id="colAlamat"
@@ -301,10 +319,8 @@
 
                                 <TableColumn fx:id="colStatus"
                                              text="Status"
-                                             prefWidth="100"/>
-
+                                             prefWidth="80"/>
                             </columns>
-
                         </TableView>
 
                     </VBox>

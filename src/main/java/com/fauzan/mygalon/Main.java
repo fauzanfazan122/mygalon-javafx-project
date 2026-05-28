@@ -13,7 +13,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 //        fxml
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("login.fxml"));
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("dashboard.fxml"));
 
         Scene scene = new Scene(loader.load());
 

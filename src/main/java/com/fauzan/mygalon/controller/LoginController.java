@@ -64,14 +64,12 @@ public class LoginController {
                         loader.getController();
 
 //                set usernameLabel di dashboard
-                dashboardController.setUsernameLabel(username);
+                dashboardController.setUsername(username);
 
 //                ambil lokasi window/stage
                 Stage stage = (Stage) inputName.getScene().getWindow();
 
-                Scene scene = new Scene(root);
-
-                stage.setScene(scene);
+                stage.getScene().setRoot(root);
             }
 
             else {
