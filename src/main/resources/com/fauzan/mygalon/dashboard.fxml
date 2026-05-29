@@ -191,7 +191,7 @@
                     <VBox styleClass="dashboard-card">
                         <LineChart fx:id="lineChart" title="Transaksi Mingguan">
                             <xAxis>
-                                <CategoryAxis label="Hari" />
+                                <CategoryAxis/>
                             </xAxis>
 
                             <yAxis>
@@ -205,7 +205,7 @@
                           styleClass="card"
                           VBox.vgrow="ALWAYS">
 
-                        <Label text="Data Transaksi"
+                        <Label text="Data Transaksi Terbaru"
                                style="-fx-text-fill: #000;"/>
 
                         <TableView fx:id="tableTransaksi"
@@ -225,26 +225,6 @@
                                 <TableColumn fx:id="colJumlah"
                                              text="Jumlah"
                                              prefWidth="50"/>
-
-                                <TableColumn fx:id="colHargaGalon"
-                                             text="Harga Satuan"
-                                             prefWidth="100"/>
-
-                                <TableColumn fx:id="colKurir"
-                                             text="Kurir"
-                                             prefWidth="80"/>
-
-                                <TableColumn fx:id="colMetode"
-                                             text="Metode"
-                                             prefWidth="80"/>
-
-                                <TableColumn fx:id="colHargaKirim"
-                                             text="Ongkir Satuan"
-                                             prefWidth="100"/>
-
-                                <TableColumn fx:id="colAlamat"
-                                             text="Alamat"
-                                             prefWidth="100"/>
 
                                 <TableColumn fx:id="colTanggal"
                                              text="Tanggal"

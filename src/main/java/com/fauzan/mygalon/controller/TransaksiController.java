@@ -7,6 +7,7 @@ import com.fauzan.mygalon.model.Transaksi;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -111,8 +112,15 @@ public class TransaksiController {
     @FXML
     private Button subButton;
 
-    ObservableList<Transaksi> list =
-            FXCollections.observableArrayList();
+    @FXML
+    private TextField inputSearch;
+
+    @FXML
+    private ComboBox<String> filterSearch;
+
+    ObservableList<Transaksi> list;
+
+    FilteredList<Transaksi> filterList;
 
     public void loadTable(){
         // tabel
@@ -196,10 +204,6 @@ public class TransaksiController {
 //                masukan ke list
                 list.add(transaksi);
             }
-
-//            tampilkan tabel
-            tableTransaksi.setItems(list);
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -300,6 +304,10 @@ public class TransaksiController {
     }
 
     public void initialize(){
+        //initialize
+        list = FXCollections.observableArrayList();
+        filterList = new FilteredList<>(list, b -> true);
+
 
         //ambil harga
         getHarga();
@@ -326,15 +334,89 @@ public class TransaksiController {
                 "diantar"
         );
 
+        filterSearch.getItems().addAll(
+                "Nama A-Z",
+                "Nama Z-A",
+                "Terbaru",
+                "Terlama",
+                "Status"
+        );
+
         // default value
         inputMetode.setValue("ambil");
         inputStatus.setValue("diproses");
 
-//        load table
+        //load table
         loadTable();
+        eventSearch();
+        eventFilter();
+
+        //default filter
+        filterSearch.setValue("Terbaru");
+
         getTableRow();
         setKirimButton();
 
+    }
+
+    public void eventFilter(){
+        filterSearch.valueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+
+                    switch (newValue){
+
+                        case "Nama A-Z" ->
+                                FXCollections.sort(
+                                        list,
+                                        (a,b) ->
+                                                a.getNamaPembeli()
+                                                        .compareToIgnoreCase(
+                                                                b.getNamaPembeli()
+                                                        )
+                                );
+
+                        case "Nama Z-A" ->
+                                FXCollections.sort(
+                                        list,
+                                        (a,b) ->
+                                                b.getNamaPembeli()
+                                                        .compareToIgnoreCase(
+                                                                a.getNamaPembeli()
+                                                        )
+                                );
+
+                        case "Terbaru" ->
+                                FXCollections.sort(
+                                        list,
+                                        (a,b) ->
+                                                b.getTanggalTransaksi()
+                                                        .compareTo(
+                                                                a.getTanggalTransaksi()
+                                                        )
+                                );
+
+                        case "Status" ->
+                                FXCollections.sort(
+                                        list,
+                                        (a,b) ->
+                                                a.getStatusTransaksi()
+                                                        .compareTo(
+                                                                b.getStatusTransaksi()
+                                                        )
+                                );
+
+                        case "Terlama" ->
+                                FXCollections.sort(
+                                        list,
+                                        (a,b) ->
+                                                a.getTanggalTransaksi()
+                                                        .compareTo(
+                                                                b.getTanggalTransaksi()
+                                                        )
+                                );
+                    }
+
+                });
     }
 
     public void setKirimButton(){
@@ -350,6 +432,27 @@ public class TransaksiController {
             hapusButton.setManaged(false);
             hapusButton.setVisible(false);
         }
+    }
+
+    public void eventSearch(){
+        inputSearch.textProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    filterList.setPredicate(transaksi -> {
+                        if(newValue == null || newValue.isEmpty()){
+                            return true;
+                        }
+
+                        //ubah jadi huruf kecil
+                        String huruf = newValue.toLowerCase();
+
+                        //validasi null
+                        String nama = transaksi.getNamaPembeli();
+
+                        return nama != null && nama.toLowerCase()
+                                .contains(huruf);
+                    });
+                });
+        tableTransaksi.setItems(filterList);
     }
 
     //select tabel row

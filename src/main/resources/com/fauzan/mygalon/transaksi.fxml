@@ -21,6 +21,7 @@
 
 <?import javafx.scene.control.ScrollPane?>
 <?import java.lang.String?>
+<?import javafx.scene.chart.LineChart?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             prefWidth="1000"
             prefHeight="650"
@@ -270,6 +271,41 @@
 
                         <Label text="Data Transaksi"
                                style="-fx-text-fill: #000;"/>
+
+                        <HBox prefWidth="Infinity">
+                            <HBox spacing="4"
+                                  prefWidth="250"
+                                  maxWidth="250"
+                                  styleClass="search-box"
+                                  alignment="CENTER">
+                                <Label>
+                                    <graphic>
+                                        <FontIcon iconLiteral="fas-search" iconColor="2563eb" iconSize="16"/>
+                                    </graphic>
+                                </Label>
+                                <TextField HBox.hgrow="ALWAYS"
+                                           styleClass="input-search"
+                                           fx:id="inputSearch"
+                                           promptText="Cari nama pembeli"/>
+                            </HBox>
+
+                            <Region HBox.hgrow="ALWAYS"/>
+
+                            <!-- filer -->
+                            <HBox prefWidth="130"
+                                  maxWidth="130"
+                                  styleClass="filter-box"
+                                  alignment="CENTER">
+                                <Label prefWidth="14" maxWidth="14">
+                                    <graphic>
+                                        <FontIcon iconLiteral="fas-filter" iconColor="2563eb" iconSize="14"/>
+                                    </graphic>
+                                </Label>
+                                <ComboBox fx:id="filterSearch"
+                                          styleClass="filter-input"
+                                          prefWidth="110"/>
+                            </HBox>
+                        </HBox>
 
                         <TableView fx:id="tableTransaksi"
                                    prefHeight="400"

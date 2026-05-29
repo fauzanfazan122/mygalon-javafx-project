@@ -21,8 +21,11 @@ import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class DashboardController {
     private int pendapatan;
@@ -58,31 +61,85 @@ public class DashboardController {
     private TableColumn<Transaksi, Integer> colJumlah;
 
     @FXML
-    private TableColumn<Transaksi, String> colKurir;
-
-    @FXML
-    private TableColumn<Transaksi, String> colAlamat;
-
-    @FXML
     private TableColumn<Transaksi, String> colStatus;
 
     @FXML
     private TableColumn<Transaksi, String> colTanggal;
 
-    @FXML
-    private TableColumn<Transaksi, String> colMetode;
-
-    @FXML
-    private TableColumn<Transaksi, Integer> colHargaGalon;
-
-    @FXML
-    private TableColumn<Transaksi, Integer> colHargaKirim;
 
     ObservableList<Transaksi> list =
             FXCollections.observableArrayList();
 
     @FXML
     private LineChart<String, Number> lineChart;
+
+    private void loadTable(){
+        //set ukuran tabel
+        tableTransaksi.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
+        //set nomor otomatis
+        colNum.setCellValueFactory(cellData ->
+
+                new ReadOnlyObjectWrapper<>(
+                        tableTransaksi.getItems().indexOf(
+                                cellData.getValue()
+                        ) + 1
+                )
+        );
+
+        //connect kolom dengan getter
+        colNama.setCellValueFactory(
+                new PropertyValueFactory<>("namaPembeli")
+        );
+
+        colTotal.setCellValueFactory(
+                new PropertyValueFactory<>("totalTransaksi")
+        );
+
+        colJumlah.setCellValueFactory(
+                new PropertyValueFactory<>("jumlahGalon")
+        );
+
+        colStatus.setCellValueFactory(
+                new PropertyValueFactory<>("statusTransaksi")
+        );
+
+        colTanggal.setCellValueFactory(
+                new PropertyValueFactory<>("tanggalTransaksi")
+        );
+
+        try (
+                Connection connection = DatabaseConn.connect();
+                Statement stmt = connection.createStatement();
+                ResultSet data = stmt.executeQuery("SELECT * FROM transaksi ORDER BY tanggalTransaksi DESC LIMIT 15");
+        ) {
+            while(data.next()){
+                Transaksi transaksi = new Transaksi(
+                        data.getInt("idTransaksi"),
+                        data.getString("namaPembeli"),
+                        data.getInt("jumlahGalon"),
+                        data.getInt("hargaGalon"),
+                        data.getString("namaKurir"),
+                        data.getString("metodePengiriman"),
+                        data.getInt("hargaKirim"),
+                        data.getString("alamatPengantaran"),
+                        data.getString("tanggalTransaksi"),
+                        data.getInt("totalTransaksi"),
+                        data.getString("statusTransaksi")
+                );
+
+//                masukan ke list
+                list.add(transaksi);
+                pendapatan += transaksi.getTotalTransaksi();
+            }
+
+//            tampilkan tabel & hitung total pendapatan
+            tableTransaksi.setItems(list);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     //set username
     public void setUsername(String nama) {
@@ -143,109 +200,76 @@ public class DashboardController {
         }
     }
 
-    public void  initialize(){
+    public void setPendapatan(int pendapatan) {
+        pendapatanLabel.setText("Rp " + pendapatan);
+    }
 
-//        Line Chart
+    public void loadChart(){
+        //buat line chat
         XYChart.Series<String, Number> dataChart = new XYChart.Series<>();
 
-        dataChart.setName("Transaksi");
-        dataChart.getData().add(new XYChart.Data<>("Senin", 10));
-        dataChart.getData().add(new XYChart.Data<>("Selasa", 15));
-        dataChart.getData().add(new XYChart.Data<>("Rabu", 7));
-        dataChart.getData().add(new XYChart.Data<>("Kamis", 20));
+        String sql = """
+            SELECT
+            date(tanggalTransaksi) as tanggal,
+            COUNT(*) as total
+            FROM transaksi
+            WHERE tanggalTransaksi >= date('now', '-6 days')
+            GROUP BY date(tanggalTransaksi)
+            ORDER BY tanggal
+        """;
 
+        try(
+                Connection connection =  DatabaseConn.connect();
+                Statement stmt = connection.createStatement();
+                ResultSet data = stmt.executeQuery(sql);
+                ){
+
+            dataChart.setName("Transaksi");
+
+
+            while(data.next()){
+
+                String day = data.getString("tanggal");
+                int harga = data.getInt("total");
+
+                //convert jadi nama hari
+                LocalDate localDate = LocalDate.parse(day);
+
+                //ambil hari dalam bahasa indonesia
+                String hari =
+                        localDate.getDayOfWeek()
+                                .getDisplayName(
+                                        TextStyle.FULL,
+                                        new Locale("id", "ID")
+                                );
+
+                dataChart.getData().add(new XYChart.Data<>(
+                        hari, data.getInt("total")));
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        lineChart.getData().clear();
         lineChart.getData().add(dataChart);
+    }
 
-//        panggil setter
+    public void  initialize(){
+
+
+        //panggil tabel
+        loadTable();
+
+        //panggil setter
+        setPendapatan(pendapatan);
         setPengantaran();
         setJumlahTransaksi();
 
-//        biar pas ukuran colomnya
-        tableTransaksi.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        //panggil chart
+        loadChart();
 
-//        set nomor otomatis
-        colNum.setCellValueFactory(cellData ->
-
-                new ReadOnlyObjectWrapper<>(
-                        tableTransaksi.getItems().indexOf(
-                                cellData.getValue()
-                        ) + 1
-                )
-        );
-
-//        connect kolom dengan getter
-        colNama.setCellValueFactory(
-                new PropertyValueFactory<>("namaPembeli")
-        );
-
-        colTotal.setCellValueFactory(
-                new PropertyValueFactory<>("totalTransaksi")
-        );
-
-        colJumlah.setCellValueFactory(
-                new PropertyValueFactory<>("jumlahGalon")
-        );
-
-        colKurir.setCellValueFactory(
-                new PropertyValueFactory<>("namaKurir")
-        );
-
-        colAlamat.setCellValueFactory(
-                new PropertyValueFactory<>("alamatPengantaran")
-        );
-
-        colHargaGalon.setCellValueFactory(
-                new PropertyValueFactory<>("hargaGalon")
-        );
-
-        colHargaKirim.setCellValueFactory(
-                new PropertyValueFactory<>("hargaKirim")
-        );
-
-        colStatus.setCellValueFactory(
-                new PropertyValueFactory<>("statusTransaksi")
-        );
-
-        colTanggal.setCellValueFactory(
-                new PropertyValueFactory<>("tanggalTransaksi")
-        );
-
-        colMetode.setCellValueFactory(
-                new PropertyValueFactory<>("metodePengiriman")
-        );
-
-        try (
-                Connection connection = DatabaseConn.connect();
-                Statement stmt = connection.createStatement();
-                ResultSet data = stmt.executeQuery("SELECT * FROM transaksi");
-             ) {
-            while(data.next()){
-                Transaksi transaksi = new Transaksi(
-                        data.getInt("idTransaksi"),
-                        data.getString("namaPembeli"),
-                        data.getInt("jumlahGalon"),
-                        data.getInt("hargaGalon"),
-                        data.getString("namaKurir"),
-                        data.getString("metodePengiriman"),
-                        data.getInt("hargaKirim"),
-                        data.getString("alamatPengantaran"),
-                        data.getString("tanggalTransaksi"),
-                        data.getInt("totalTransaksi"),
-                        data.getString("statusTransaksi")
-                );
-
-//                masukan ke list
-                list.add(transaksi);
-                pendapatan += transaksi.getTotalTransaksi();
-            }
-
-//            tampilkan tabel & hitung total pendapatan
-            tableTransaksi.setItems(list);
-            pendapatanLabel.setText("Rp " + pendapatan);
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+//
     }
 
     public void bukaTransaksi(){

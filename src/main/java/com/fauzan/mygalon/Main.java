@@ -5,15 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-
 import java.io.IOException;
 
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 //        fxml
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("dashboard.fxml"));
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("login.fxml"));
 
         Scene scene = new Scene(loader.load());
 
