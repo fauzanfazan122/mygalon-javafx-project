@@ -123,7 +123,6 @@ public class TransaksiController {
     FilteredList<Transaksi> filterList;
 
     public void loadTable(){
-        // tabel
 
 //        atur ukuran colom
         tableTransaksi.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -204,6 +203,7 @@ public class TransaksiController {
 //                masukan ke list
                 list.add(transaksi);
             }
+            applyFilter();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -359,63 +359,72 @@ public class TransaksiController {
 
     }
 
+    public void applyFilter(){
+
+        String newValue = filterSearch.getValue();
+
+        if(newValue == null){
+            return;
+        }
+
+        switch (newValue){
+
+            case "Nama A-Z" ->
+                    FXCollections.sort(
+                            list,
+                            (a,b) ->
+                                    a.getNamaPembeli()
+                                            .compareToIgnoreCase(
+                                                    b.getNamaPembeli()
+                                            )
+                    );
+
+            case "Nama Z-A" ->
+                    FXCollections.sort(
+                            list,
+                            (a,b) ->
+                                    b.getNamaPembeli()
+                                            .compareToIgnoreCase(
+                                                    a.getNamaPembeli()
+                                            )
+                    );
+
+            case "Terbaru" ->
+                    FXCollections.sort(
+                            list,
+                            (a,b) ->
+                                    b.getTanggalTransaksi()
+                                            .compareTo(
+                                                    a.getTanggalTransaksi()
+                                            )
+                    );
+
+            case "Status" ->
+                    FXCollections.sort(
+                            list,
+                            (a,b) ->
+                                    a.getStatusTransaksi()
+                                            .compareTo(
+                                                    b.getStatusTransaksi()
+                                            )
+                    );
+
+            case "Terlama" ->
+                    FXCollections.sort(
+                            list,
+                            (a,b) ->
+                                    a.getTanggalTransaksi()
+                                            .compareTo(
+                                                    b.getTanggalTransaksi()
+                                            )
+                    );
+        }
+    }
+
     public void eventFilter(){
         filterSearch.valueProperty().addListener(
                 (observable, oldValue, newValue) -> {
-
-                    switch (newValue){
-
-                        case "Nama A-Z" ->
-                                FXCollections.sort(
-                                        list,
-                                        (a,b) ->
-                                                a.getNamaPembeli()
-                                                        .compareToIgnoreCase(
-                                                                b.getNamaPembeli()
-                                                        )
-                                );
-
-                        case "Nama Z-A" ->
-                                FXCollections.sort(
-                                        list,
-                                        (a,b) ->
-                                                b.getNamaPembeli()
-                                                        .compareToIgnoreCase(
-                                                                a.getNamaPembeli()
-                                                        )
-                                );
-
-                        case "Terbaru" ->
-                                FXCollections.sort(
-                                        list,
-                                        (a,b) ->
-                                                b.getTanggalTransaksi()
-                                                        .compareTo(
-                                                                a.getTanggalTransaksi()
-                                                        )
-                                );
-
-                        case "Status" ->
-                                FXCollections.sort(
-                                        list,
-                                        (a,b) ->
-                                                a.getStatusTransaksi()
-                                                        .compareTo(
-                                                                b.getStatusTransaksi()
-                                                        )
-                                );
-
-                        case "Terlama" ->
-                                FXCollections.sort(
-                                        list,
-                                        (a,b) ->
-                                                a.getTanggalTransaksi()
-                                                        .compareTo(
-                                                                b.getTanggalTransaksi()
-                                                        )
-                                );
-                    }
-
+            applyFilter();
                 });
     }
 
@@ -605,14 +614,16 @@ public class TransaksiController {
             statement.executeUpdate();
 
 //            update tabel
-
             loadTable();
+
 
 //            status
             labelStatus.getStyleClass().setAll("status-success");
             labelStatus.setManaged(true);
             labelStatus.setVisible(true);
             labelStatus.setText("Succes! Transaksi berhasil di tambahkan!");
+
+            cancelButton();
 
         } catch (SQLException e) {
 
@@ -708,6 +719,7 @@ public class TransaksiController {
 
             statement.executeUpdate();
 
+            //update tabel
             loadTable();
 
             labelStatus.getStyleClass().setAll("status-success");
