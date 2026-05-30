@@ -167,6 +167,26 @@ public class HargaController {
         }
     }
 
+    public void bukaLaporan(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/fauzan/mygalon/laporan.fxml"));
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) inputHargaKirim.getScene().getWindow();
+
+            LaporanController controller =
+                    loader.getController();
+
+            controller.setUsername(username);
+
+            stage.getScene().setRoot(root);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void updateTransaksi(){
         //validasi
         if(!validasi()){

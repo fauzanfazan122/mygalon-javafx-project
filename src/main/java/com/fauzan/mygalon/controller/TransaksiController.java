@@ -273,6 +273,26 @@ public class TransaksiController {
         }
     }
 
+    public void bukaLaporan(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/fauzan/mygalon/laporan.fxml"));
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) tableTransaksi.getScene().getWindow();
+
+            LaporanController controller =
+                    loader.getController();
+
+            controller.setUsername(username);
+
+            stage.getScene().setRoot(root);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void updateTotalLabel(){
         if(inputJumlahGalon.getText().isEmpty() || !inputJumlahGalon.getText().matches("\\d+")) {
             totalLabel.setText("Rp 0");

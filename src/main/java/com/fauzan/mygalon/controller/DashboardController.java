@@ -9,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
@@ -32,6 +31,9 @@ public class DashboardController {
     private int pengantaran;
     private int jumlahTransaksi;
     private String username;
+
+    //tanggal hari ini
+    String today;
 
     @FXML
     private Label pendapatanLabel;
@@ -130,7 +132,6 @@ public class DashboardController {
 
 //                masukan ke list
                 list.add(transaksi);
-                pendapatan += transaksi.getTotalTransaksi();
             }
 
 //            tampilkan tabel & hitung total pendapatan
@@ -149,10 +150,6 @@ public class DashboardController {
 
     //ambil transaksi hari ini
     public void setJumlahTransaksi(){
-
-//            ambil tanggal hari ini
-        String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
         try (
                 Connection connection = DatabaseConn.connect();
                 Statement stmt = connection.createStatement();
@@ -174,6 +171,24 @@ public class DashboardController {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public void setPendapatan(){
+        String sql = "SELECT totalTransaksi FROM transaksi WHERE tanggalTransaksi LIKE '" + today + "%'";
+
+        try(
+                Connection connection = DatabaseConn.connect();
+                Statement stmt = connection.createStatement();
+                ResultSet data = stmt.executeQuery(sql);
+                ){
+            while(data.next()){
+                pendapatan += data.getInt("totalTransaksi");
+            }
+            setPendapatanLabel(pendapatan);
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -200,23 +215,24 @@ public class DashboardController {
         }
     }
 
-    public void setPendapatan(int pendapatan) {
+    public void setPendapatanLabel(int pendapatan) {
         pendapatanLabel.setText("Rp " + pendapatan);
     }
 
     public void loadChart(){
-        //buat line chat
         XYChart.Series<String, Number> dataChart = new XYChart.Series<>();
+
+        String currentWeek = LocalDate.now().minusDays(6).toString();
 
         String sql = """
             SELECT
             date(tanggalTransaksi) as tanggal,
             COUNT(*) as total
             FROM transaksi
-            WHERE tanggalTransaksi >= date('now', '-6 days')
+            WHERE date(tanggalTransaksi) >= '%s'
             GROUP BY date(tanggalTransaksi)
             ORDER BY tanggal
-        """;
+        """.formatted(currentWeek);
 
         try(
                 Connection connection =  DatabaseConn.connect();
@@ -256,13 +272,14 @@ public class DashboardController {
     }
 
     public void  initialize(){
-
+        //set tanggal
+        today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         //panggil tabel
         loadTable();
 
         //panggil setter
-        setPendapatan(pendapatan);
+        setPendapatan();
         setPengantaran();
         setJumlahTransaksi();
 
@@ -309,6 +326,26 @@ public class DashboardController {
             Stage stage = (Stage) tableTransaksi.getScene().getWindow();
 
             HargaController controller =
+                    loader.getController();
+
+            controller.setUsername(username);
+
+            stage.getScene().setRoot(root);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void bukaLaporan(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/fauzan/mygalon/laporan.fxml"));
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) tableTransaksi.getScene().getWindow();
+
+            LaporanController controller =
                     loader.getController();
 
             controller.setUsername(username);

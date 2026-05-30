@@ -1,31 +1,31 @@
-package com.fauzan.mygalon;
+    package com.fauzan.mygalon;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
-import java.io.IOException;
+    import javafx.application.Application;
+    import javafx.fxml.FXMLLoader;
+    import javafx.scene.Scene;
+    import javafx.scene.image.Image;
+    import javafx.stage.Stage;
+    import java.io.IOException;
 
-public class Main extends Application {
-    @Override
-    public void start(Stage stage) throws IOException {
-//        fxml
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("login.fxml"));
+    public class Main extends Application {
+        @Override
+        public void start(Stage stage) throws IOException {
+    //        fxml
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("laporan.fxml"));
 
-        Scene scene = new Scene(loader.load());
+            Scene scene = new Scene(loader.load());
 
-        scene.getStylesheets().add(Main.class.getResource("style.css").toExternalForm());
+            scene.getStylesheets().add(Main.class.getResource("style.css").toExternalForm());
 
-        stage.setTitle("MyGalon - pendataan transaksi");
-        stage.setScene(scene);
-        stage.show();
-        stage.getIcons().add(
-                new Image(Main.class.getResourceAsStream("assets/logo.png"))
-        );
+            stage.setTitle("MyGalon - pendataan transaksi");
+            stage.setScene(scene);
+            stage.show();
+            stage.getIcons().add(
+                    new Image(Main.class.getResourceAsStream("assets/logo.png"))
+            );
 
+        }
+        public static void main(String[] args) {
+            Application.launch(Main.class, args);
+        }
     }
-    public static void main(String[] args) {
-        Application.launch(Main.class, args);
-    }
-}
