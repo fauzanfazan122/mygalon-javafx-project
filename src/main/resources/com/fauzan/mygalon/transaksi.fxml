@@ -107,6 +107,13 @@
                     onAction="#bukaLaporan"
                     styleClass="sidebar-button"/>
 
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <HBox alignment="CENTER">
+                <Label style="-fx-font-size: 11; -fx-text-fill: #555" text="© Copyright RM.Fauzan 162024035" />
+            </HBox>
+
         </VBox>
     </left>
 
@@ -115,253 +122,260 @@
 
         <ScrollPane fitToWidth="true" styleClass="content-scroll">
             <content>
-                <VBox spacing="20"
+                <VBox spacing="24"
                       styleClass="content">
 
-                    <!-- FORM -->
-                    <VBox spacing="20"
-                          prefWidth="900"
-                          styleClass="form-card">
+                    <!-- Section 1 -->
 
-                        <Label styleClass="form-label" text="Tambah Transaksi"/>
+                    <VBox spacing="16">
+                        <!-- section title -->
+                        <Label fx:id="formLabel"
+                               styleClass="section-title"/>
 
-                        <!-- ROW 1 -->
-                        <HBox spacing="15">
+                        <!-- FORM -->
+                        <VBox spacing="20"
+                              prefWidth="900"
+                              styleClass="form-card">
 
-                            <!-- Nama -->
-                            <VBox spacing="8"
-                                  HBox.hgrow="ALWAYS">
+                            <!-- ROW 1 -->
+                            <HBox spacing="15">
 
-                                <Label styleClass="form-label" text="Nama Pembeli"/>
+                                <!-- Nama -->
+                                <VBox spacing="8"
+                                      HBox.hgrow="ALWAYS">
 
-                                <TextField fx:id="inputNama"
-                                           styleClass="form-input"
-                                           promptText="Masukkan nama pembeli"
-                                           prefWidth="300"
-                                           maxWidth="Infinity"/>
+                                    <Label styleClass="form-label" text="Nama Pembeli"/>
 
-                            </VBox>
+                                    <TextField fx:id="inputNama"
+                                               styleClass="form-input"
+                                               promptText="Masukkan nama pembeli"
+                                               prefWidth="300"
+                                               maxWidth="Infinity"/>
 
-                            <!-- Jumlah Galon -->
-                            <VBox spacing="8"
-                                  HBox.hgrow="ALWAYS">
+                                </VBox>
 
-                                <Label styleClass="form-label" text="Jumlah Galon"/>
+                                <!-- Jumlah Galon -->
+                                <VBox spacing="8"
+                                      HBox.hgrow="ALWAYS">
 
-                                <TextField fx:id="inputJumlahGalon"
-                                           promptText="Masukkan jumlah galon"
-                                           prefWidth="300"
-                                           maxWidth="Infinity"
-                                           styleClass="form-input"/>
+                                    <Label styleClass="form-label" text="Jumlah Galon"/>
 
-                            </VBox>
+                                    <TextField fx:id="inputJumlahGalon"
+                                               promptText="Masukkan jumlah galon"
+                                               prefWidth="300"
+                                               maxWidth="Infinity"
+                                               styleClass="form-input"/>
 
-                        </HBox>
+                                </VBox>
 
-                        <!-- ROW 2 -->
-                        <HBox spacing="15">
+                            </HBox>
 
-                            <!-- Nama Kurir -->
-                            <VBox spacing="8"
-                                  HBox.hgrow="ALWAYS">
+                            <!-- ROW 2 -->
+                            <HBox spacing="15">
 
-                                <Label styleClass="form-label" text="Nama Kurir"/>
+                                <!-- Nama Kurir -->
+                                <VBox spacing="8"
+                                      HBox.hgrow="ALWAYS">
 
-                                <TextField fx:id="inputKurir"
-                                           promptText="Masukkan nama kurir"
-                                           prefWidth="300"
-                                           styleClass="form-input"
-                                           maxWidth="Infinity"/>
+                                    <Label styleClass="form-label" text="Nama Kurir"/>
 
-                            </VBox>
+                                    <TextField fx:id="inputKurir"
+                                               promptText="Masukkan nama kurir"
+                                               prefWidth="300"
+                                               styleClass="form-input"
+                                               maxWidth="Infinity"/>
 
-                            <!-- Metode -->
-                            <VBox spacing="8"
-                                  HBox.hgrow="ALWAYS">
+                                </VBox>
 
-                                <Label styleClass="form-label" text="Metode Pengiriman"/>
+                                <!-- Metode -->
+                                <VBox spacing="8"
+                                      HBox.hgrow="ALWAYS">
 
-                                <ComboBox fx:id="inputMetode"
-                                          promptText="Pilih metode"
-                                          prefWidth="300"
-                                          styleClass="form-input"
+                                    <Label styleClass="form-label" text="Metode Pengiriman"/>
+
+                                    <ComboBox fx:id="inputMetode"
+                                              promptText="Pilih metode"
+                                              prefWidth="300"
+                                              styleClass="form-input"
+                                              maxWidth="Infinity"/>
+
+                                </VBox>
+
+                            </HBox>
+
+                            <!-- ROW 3 -->
+                            <VBox spacing="8">
+
+                                <Label styleClass="form-label" text="Alamat Pengantaran"/>
+
+                                <TextArea fx:id="inputAlamat"
+                                          promptText="Masukkan alamat pengantaran"
+                                          prefRowCount="3"
+                                          prefWidth="600"
                                           maxWidth="Infinity"/>
 
                             </VBox>
 
-                        </HBox>
+                            <!-- ROW 4 -->
+                            <HBox spacing="15">
 
-                        <!-- ROW 3 -->
-                        <VBox spacing="8">
+                                <!-- Status -->
+                                <VBox spacing="8"
+                                      HBox.hgrow="ALWAYS">
 
-                            <Label styleClass="form-label" text="Alamat Pengantaran"/>
+                                    <Label styleClass="form-label" text="Status Transaksi"/>
 
-                            <TextArea fx:id="inputAlamat"
-                                      promptText="Masukkan alamat pengantaran"
-                                      prefRowCount="3"
-                                      prefWidth="600"
-                                      maxWidth="Infinity"/>
+                                    <ComboBox fx:id="inputStatus"
+                                              promptText="Pilih status"
+                                              prefWidth="300"
+                                              maxWidth="Infinity"/>
 
-                        </VBox>
+                                </VBox>
 
-                        <!-- ROW 4 -->
-                        <HBox spacing="15">
+                                <!-- Total -->
+                                <VBox spacing="8"
+                                      HBox.hgrow="ALWAYS">
+
+                                    <Label styleClass="form-label" text="Total Transaksi"/>
+
+                                    <Label fx:id="totalLabel"
+                                           styleClass="total-label"
+                                           prefWidth="300"/>
+
+                                </VBox>
+
+                            </HBox>
+
+                            <!-- BUTTON -->
+                            <HBox spacing="10">
+
+                                <Button fx:id="kirimButton"
+                                        styleClass="btn-primary"
+                                        onAction="#kirimTransaksi"/>
+
+                                <Button fx:id="subButton"
+                                        styleClass="btn-secondary"
+                                        onAction="#cancelButton"/>
+
+                                <Region HBox.hgrow="ALWAYS"/>
+
+                                <Button fx:id="hapusButton"
+                                        text="Hapus"
+                                        managed="false"
+                                        visible="false"
+                                        styleClass="btn-danger"
+                                        onAction="#deleteTransaksi"/>
+
+                            </HBox>
+
 
                             <!-- Status -->
-                            <VBox spacing="8"
-                                  HBox.hgrow="ALWAYS">
-
-                                <Label styleClass="form-label" text="Status Transaksi"/>
-
-                                <ComboBox fx:id="inputStatus"
-                                          promptText="Pilih status"
-                                          prefWidth="300"
-                                          maxWidth="Infinity"/>
-
+                            <VBox HBox.hgrow="ALWAYS">
+                                <Label styleClass="status-error" managed="false" visible="false" fx:id="labelStatus" />
                             </VBox>
-
-                            <!-- Total -->
-                            <VBox spacing="8"
-                                  HBox.hgrow="ALWAYS">
-
-                                <Label styleClass="form-label" text="Total Transaksi"/>
-
-                                <Label fx:id="totalLabel"
-                                       styleClass="total-label"
-                                       prefWidth="300"/>
-
-                            </VBox>
-
-                        </HBox>
-
-                        <!-- BUTTON -->
-                        <HBox spacing="10">
-
-                            <Button fx:id="kirimButton"
-                                    styleClass="btn-primary"
-                                    onAction="#kirimTransaksi"/>
-
-                            <Button fx:id="subButton"
-                                    styleClass="btn-secondary"
-                                    onAction="#cancelButton"/>
-
-                            <Region HBox.hgrow="ALWAYS"/>
-
-                            <Button fx:id="hapusButton"
-                                    text="Hapus"
-                                    managed="false"
-                                    visible="false"
-                                    styleClass="btn-danger"
-                                    onAction="#deleteTransaksi"/>
-
-                        </HBox>
-
-
-                        <!-- Status -->
-                        <VBox HBox.hgrow="ALWAYS">
-                            <Label styleClass="status-error" managed="false" visible="false" fx:id="labelStatus" />
                         </VBox>
-
                     </VBox>
 
 
-                    <!-- TABLE -->
-                    <VBox spacing="10"
-                          styleClass="card"
-                          VBox.vgrow="ALWAYS">
-
+                    <VBox spacing="16">
+                        <!-- section title -->
                         <Label text="Data Transaksi"
-                               style="-fx-text-fill: #000;"/>
+                               styleClass="section-title"/>
 
-                        <HBox prefWidth="Infinity">
-                            <HBox spacing="4"
-                                  prefWidth="250"
-                                  maxWidth="250"
-                                  styleClass="search-box"
-                                  alignment="CENTER">
-                                <Label>
-                                    <graphic>
-                                        <FontIcon iconLiteral="fas-search" iconColor="2563eb" iconSize="16"/>
-                                    </graphic>
-                                </Label>
-                                <TextField HBox.hgrow="ALWAYS"
-                                           styleClass="input-search"
-                                           fx:id="inputSearch"
-                                           promptText="Cari nama pembeli"/>
+                        <VBox spacing="10"
+                              styleClass="card"
+                              VBox.vgrow="ALWAYS">
+
+                            <HBox prefWidth="Infinity">
+                                <!-- search bar -->
+                                <HBox spacing="4"
+                                      prefWidth="250"
+                                      maxWidth="250"
+                                      styleClass="search-box"
+                                      alignment="CENTER">
+                                    <Label>
+                                        <graphic>
+                                            <FontIcon iconLiteral="fas-search" iconColor="2563eb" iconSize="16"/>
+                                        </graphic>
+                                    </Label>
+                                    <TextField HBox.hgrow="ALWAYS"
+                                               styleClass="input-search"
+                                               fx:id="inputSearch"
+                                               promptText="Cari nama pembeli"/>
+                                </HBox>
+
+                                <Region HBox.hgrow="ALWAYS"/>
+
+                                <!-- filer -->
+                                <HBox prefWidth="130"
+                                      maxWidth="130"
+                                      styleClass="filter-box"
+                                      alignment="CENTER">
+                                    <Label prefWidth="14" maxWidth="14">
+                                        <graphic>
+                                            <FontIcon iconLiteral="fas-filter" iconColor="2563eb" iconSize="14"/>
+                                        </graphic>
+                                    </Label>
+                                    <ComboBox fx:id="filterSearch"
+                                              styleClass="filter-input"
+                                              prefWidth="110"/>
+                                </HBox>
                             </HBox>
 
-                            <Region HBox.hgrow="ALWAYS"/>
+                            <!-- TABLE -->
+                            <TableView fx:id="tableTransaksi"
+                                       prefHeight="400"
+                                       prefWidth="800">
 
-                            <!-- filer -->
-                            <HBox prefWidth="130"
-                                  maxWidth="130"
-                                  styleClass="filter-box"
-                                  alignment="CENTER">
-                                <Label prefWidth="14" maxWidth="14">
-                                    <graphic>
-                                        <FontIcon iconLiteral="fas-filter" iconColor="2563eb" iconSize="14"/>
-                                    </graphic>
-                                </Label>
-                                <ComboBox fx:id="filterSearch"
-                                          styleClass="filter-input"
-                                          prefWidth="110"/>
-                            </HBox>
-                        </HBox>
+                                <columns>
 
-                        <TableView fx:id="tableTransaksi"
-                                   prefHeight="400"
-                                   prefWidth="800">
+                                    <TableColumn fx:id="colNum"
+                                                 text="No"
+                                                 prefWidth="30"/>
 
-                            <columns>
+                                    <TableColumn fx:id="colNama"
+                                                 text="Nama"
+                                                 prefWidth="80"/>
 
-                                <TableColumn fx:id="colNum"
-                                             text="No"
-                                             prefWidth="30"/>
+                                    <TableColumn fx:id="colJumlah"
+                                                 text="Jumlah"
+                                                 prefWidth="50"/>
 
-                                <TableColumn fx:id="colNama"
-                                             text="Nama"
-                                             prefWidth="80"/>
+                                    <TableColumn fx:id="colHargaGalon"
+                                                 text="Harga Satuan"
+                                                 prefWidth="100"/>
 
-                                <TableColumn fx:id="colJumlah"
-                                             text="Jumlah"
-                                             prefWidth="50"/>
+                                    <TableColumn fx:id="colKurir"
+                                                 text="Kurir"
+                                                 prefWidth="80"/>
 
-                                <TableColumn fx:id="colHargaGalon"
-                                             text="Harga Satuan"
-                                             prefWidth="100"/>
+                                    <TableColumn fx:id="colMetode"
+                                                 text="Metode"
+                                                 prefWidth="80"/>
 
-                                <TableColumn fx:id="colKurir"
-                                             text="Kurir"
-                                             prefWidth="80"/>
+                                    <TableColumn fx:id="colHargaKirim"
+                                                 text="Ongkir Satuan"
+                                                 prefWidth="100"/>
 
-                                <TableColumn fx:id="colMetode"
-                                             text="Metode"
-                                             prefWidth="80"/>
+                                    <TableColumn fx:id="colAlamat"
+                                                 text="Alamat"
+                                                 prefWidth="100"/>
 
-                                <TableColumn fx:id="colHargaKirim"
-                                             text="Ongkir Satuan"
-                                             prefWidth="100"/>
+                                    <TableColumn fx:id="colTanggal"
+                                                 text="Tanggal"
+                                                 prefWidth="100"/>
 
-                                <TableColumn fx:id="colAlamat"
-                                             text="Alamat"
-                                             prefWidth="100"/>
+                                    <TableColumn fx:id="colTotal"
+                                                 text="Total"
+                                                 prefWidth="100"/>
 
-                                <TableColumn fx:id="colTanggal"
-                                             text="Tanggal"
-                                             prefWidth="100"/>
-
-                                <TableColumn fx:id="colTotal"
-                                             text="Total"
-                                             prefWidth="100"/>
-
-                                <TableColumn fx:id="colStatus"
-                                             text="Status"
-                                             prefWidth="80"/>
-                            </columns>
-                        </TableView>
-
+                                    <TableColumn fx:id="colStatus"
+                                                 text="Status"
+                                                 prefWidth="80"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
                     </VBox>
-
                 </VBox>
             </content>
         </ScrollPane>

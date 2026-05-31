@@ -103,102 +103,116 @@
                     onAction="#bukaLaporan"
                     styleClass="sidebar-button"/>
 
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <HBox alignment="CENTER">
+                <Label style="-fx-font-size: 11; -fx-text-fill: #555" text="© Copyright RM.Fauzan 162024035" />
+            </HBox>
+
         </VBox>
     </left>
 
 
     <center>
-
         <ScrollPane fitToWidth="true" styleClass="content-scroll">
             <content>
-                <VBox spacing="20"
+                <VBox spacing="24"
                       styleClass="content">
 
-                    <!-- CARD -->
-                    <HBox spacing="16">
+                    <VBox spacing="16">
+                        <!-- section title -->
+                        <Label text="Harga Saat ini"
+                               styleClass="section-title"/>
 
-                        <VBox spacing="8"
-                              prefWidth="200"
-                              styleClass="dashboard-card">
+                        <!-- CARD -->
+                        <HBox spacing="16">
 
-                            <Label text="Harga Galon"
-                                   styleClass="card-title"/>
-
-                            <Label fx:id="hargaGalonLabel"
-                                   styleClass="card-value"/>
-
-                        </VBox>
-
-                        <VBox spacing="8"
-                              prefWidth="200"
-                              styleClass="dashboard-card">
-
-                            <Label text="Harga Kirim"
-                                   styleClass="card-title"/>
-
-                            <Label fx:id="hargaKirimLabel"
-                                   styleClass="card-value"/>
-
-                        </VBox>
-                    </HBox>
-
-                    <!-- FORM -->
-                    <VBox spacing="20"
-                          prefWidth="900"
-                          styleClass="form-card">
-
-                        <Label styleClass="form-label" text="Update Harga"/>
-
-                        <!-- ROW 1 -->
-                        <HBox spacing="15">
-
-                            <!-- Harga galon -->
                             <VBox spacing="8"
-                                  HBox.hgrow="ALWAYS">
+                                  prefWidth="280"
+                                  styleClass="dashboard-card">
 
-                                <Label styleClass="form-label" text="Harga Galon"/>
+                                <Label text="Harga Galon"
+                                       styleClass="card-title"/>
 
-                                <TextField fx:id="inputHargaGalon"
-                                           styleClass="form-input"
-                                           prefWidth="300"
-                                           maxWidth="Infinity"/>
+                                <Label fx:id="hargaGalonLabel"
+                                       styleClass="card-value"/>
 
                             </VBox>
 
-                            <!-- Harga kirim -->
                             <VBox spacing="8"
-                                  HBox.hgrow="ALWAYS">
+                                  prefWidth="280"
+                                  styleClass="dashboard-card">
 
-                                <Label styleClass="form-label" text="Harga Kirim"/>
+                                <Label text="Harga Kirim"
+                                       styleClass="card-title"/>
 
-                                <TextField fx:id="inputHargaKirim"
-                                           prefWidth="300"
-                                           maxWidth="Infinity"
-                                           styleClass="form-input"/>
+                                <Label fx:id="hargaKirimLabel"
+                                       styleClass="card-value"/>
 
                             </VBox>
-
                         </HBox>
-
-                        <!-- BUTTON -->
-                        <HBox spacing="10">
-
-                            <Button text="Perbarui"
-                                    styleClass="btn-primary"
-                                    onAction="#updateTransaksi"/>
-
-                            <Button styleClass="btn-secondary"
-                                    text="Reset"
-                                    onAction="#resetInput"/>
-
-                        </HBox>
-
-                        <!-- Status -->
-                        <VBox HBox.hgrow="ALWAYS">
-                            <Label managed="false" visible="false" fx:id="statusLabel" />
-                        </VBox>
                     </VBox>
 
+
+                    <VBox spacing="16">
+                        <!-- section title -->
+                        <Label text="Update Harga"
+                               styleClass="section-title"/>
+                        <!-- FORM -->
+                        <VBox spacing="20"
+                              prefWidth="900"
+                              styleClass="form-card">
+
+                            <!-- ROW 1 -->
+                            <HBox spacing="15">
+
+                                <!-- Harga galon -->
+                                <VBox spacing="8"
+                                      HBox.hgrow="ALWAYS">
+
+                                    <Label styleClass="form-label" text="Harga Galon"/>
+
+                                    <TextField fx:id="inputHargaGalon"
+                                               styleClass="form-input"
+                                               prefWidth="300"
+                                               maxWidth="Infinity"/>
+                                </VBox>
+
+                                <!-- Harga kirim -->
+                                <VBox spacing="8"
+                                      HBox.hgrow="ALWAYS">
+
+                                    <Label styleClass="form-label" text="Harga Kirim"/>
+
+                                    <TextField fx:id="inputHargaKirim"
+                                               prefWidth="300"
+                                               maxWidth="Infinity"
+                                               styleClass="form-input"/>
+
+                                </VBox>
+
+                            </HBox>
+
+                            <!-- BUTTON -->
+                            <HBox spacing="10">
+
+                                <Button text="Perbarui"
+                                        styleClass="btn-primary"
+                                        onAction="#updateTransaksi"/>
+
+                                <Button styleClass="btn-secondary"
+                                        text="Reset"
+                                        onAction="#resetInput"/>
+
+                            </HBox>
+
+                            <!-- Status -->
+                            <VBox HBox.hgrow="ALWAYS">
+                                <Label managed="false" visible="false" fx:id="statusLabel" />
+                            </VBox>
+                        </VBox>
+                    </VBox>
                 </VBox>
             </content>
         </ScrollPane>

@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class HargaController {
 
@@ -37,6 +39,12 @@ public class HargaController {
 
     @FXML
     private Label statusLabel;
+
+    //format rupiah
+    NumberFormat rupiah =
+            NumberFormat.getCurrencyInstance(
+                    new Locale("id", "ID")
+            );
 
     public void initialize(){
         //set username
@@ -105,11 +113,11 @@ public class HargaController {
     }
 
     public void setHargaGalonLabel(int harga){
-        hargaGalonLabel.setText("Rp " + harga);
+        hargaGalonLabel.setText(rupiah.format(harga));
     }
 
     public void setHargaKirimLabel(int harga){
-        hargaKirimLabel.setText("Rp " + harga);
+        hargaKirimLabel.setText(rupiah.format(harga));
     }
 
     public void setInputHargaGalon(int harga){

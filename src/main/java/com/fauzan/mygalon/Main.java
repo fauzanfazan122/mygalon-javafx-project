@@ -11,7 +11,7 @@
         @Override
         public void start(Stage stage) throws IOException {
     //        fxml
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("laporan.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("login.fxml"));
 
             Scene scene = new Scene(loader.load());
 

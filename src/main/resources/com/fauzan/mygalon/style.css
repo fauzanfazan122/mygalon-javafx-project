@@ -105,6 +105,20 @@
     );
 }
 
+.app-title{
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(0,0,0,0.5),
+            10,
+            0,
+            0,
+            3
+    );
+}
+
 .login-status{
     -fx-text-fill: red;
     -fx-font-weight: bold;
@@ -199,7 +213,13 @@
 .hello-title{
     -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-text-fill: #0f172a;
+    -fx-text-fill: #222222;
+}
+
+.section-title{
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #555 ;
 }
 
 /* CARD */
@@ -318,6 +338,14 @@
     -fx-padding: 2 2 4 10;
 }
 
+.cahrt-filter-box{
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-background-color: #ffff;
+    -fx-padding: 2 2 4 4;
+}
+
 .input-search{
     -fx-border-color: transparent;
     -fx-background-color: #ffff;
@@ -363,6 +391,28 @@
     -fx-font-weight: bold;
     -fx-background-radius: 10;
     -fx-padding: 10 18;
+}
+
+/* DATE PICKER */
+.date-picker{
+    -fx-background-color: white;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.date-picker:focused{
+    -fx-border-color: #2563eb;
+}
+
+.date-picker .text-field{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.date-picker .arrow-button{
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 10 10 0;
 }
 
 /* LABEL */
@@ -461,7 +511,7 @@
 .chart-title {
     -fx-text-fill: black;
     -fx-font-size: 16px;
-    -fx-font-weight: bold;
+    -fx-font-weight: normal;
 }
 
 .axis-label {

@@ -21,6 +21,8 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import java.lang.String?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.chart.AreaChart?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             prefWidth="1000"
             prefHeight="650"
@@ -107,6 +109,13 @@
                     onAction="#bukaLaporan"
                     styleClass="sidebar-button"/>
 
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <HBox alignment="CENTER">
+                <Label style="-fx-font-size: 11; -fx-text-fill: #555" text="© Copyright RM.Fauzan 162024035" />
+            </HBox>
+
         </VBox>
     </left>
 
@@ -114,9 +123,8 @@
     <center>
         <ScrollPane fitToWidth="true" styleClass="content-scroll">
             <content>
-                <VBox spacing="20"
+                <VBox spacing="24"
                       styleClass="content">
-
                     <HBox>
                         <Label text="Selamat datang "
                                styleClass="hello-title"/>
@@ -124,91 +132,117 @@
                                styleClass="hello-title"/>
                     </HBox>
 
-                    <!-- CARD -->
-                    <HBox spacing="16">
+                    <!-- section 1 -->
+                    <VBox spacing="16">
 
-                        <VBox spacing="8"
-                              prefWidth="180"
-                              styleClass="dashboard-card">
+                        <!-- CARD -->
+                        <HBox spacing="16">
 
-                            <Label text="Transaksi hari ini"
-                                   styleClass="card-title"/>
+                            <VBox spacing="8"
+                                  prefWidth="250"
+                                  styleClass="dashboard-card">
 
-                            <Label fx:id="jumlahTransaksiLabel"
-                                   styleClass="card-value"/>
+                                <Label text="Transaksi hari ini"
+                                       styleClass="card-title"/>
 
-                        </VBox>
+                                <Label fx:id="jumlahTransaksiLabel"
+                                       styleClass="card-value"/>
 
-                        <VBox spacing="8"
-                              prefWidth="200"
-                              styleClass="dashboard-card">
+                            </VBox>
 
-                            <Label text="Perlu diantar"
-                                   styleClass="card-title"/>
+                            <VBox spacing="8"
+                                  prefWidth="250"
+                                  styleClass="dashboard-card">
 
-                            <Label fx:id="pengantaranLabel"
-                                   styleClass="card-value"/>
+                                <Label text="Perlu diantar"
+                                       styleClass="card-title"/>
 
-                        </VBox>
+                                <Label fx:id="pengantaranLabel"
+                                       styleClass="card-value"/>
 
-                        <VBox spacing="8"
-                              prefWidth="200"
-                              styleClass="dashboard-card">
+                            </VBox>
 
-                            <Label text="Pendapatan"
-                                   styleClass="card-title"/>
+                            <VBox spacing="8"
+                                  prefWidth="280"
+                                  styleClass="dashboard-card">
 
-                            <Label fx:id="pendapatanLabel"
-                                   styleClass="card-value"/>
+                                <Label text="Pendapatan"
+                                       styleClass="card-title"/>
 
-                        </VBox>
-                    </HBox>
+                                <Label fx:id="pendapatanLabel"
+                                       styleClass="card-value"/>
 
-                    <HBox spacing="16">
+                            </VBox>
+                        </HBox>
 
-                        <!-- tambah transaksi -->
-                        <Button prefWidth="180"
-                                graphicTextGap="8"
-                                styleClass="btn-tambah"
-                                onAction="#bukaTransaksi">
-                            <text>Tambah Transaksi</text>
-                            <graphic>
-                                <FontIcon iconLiteral="fas-plus" iconColor="white"/>
-                            </graphic>
-                        </Button>
+                        <!-- shortcut -->
+                        <HBox spacing="16">
+                            <!-- tambah transaksi -->
+                            <Button prefWidth="180"
+                                    graphicTextGap="8"
+                                    styleClass="btn-tambah"
+                                    onAction="#bukaTransaksi">
+                                <text>Tambah Transaksi</text>
+                                <graphic>
+                                    <FontIcon iconLiteral="fas-plus" iconColor="white"/>
+                                </graphic>
+                            </Button>
 
-                        <!-- edit harga -->
-                        <Button prefWidth="180"
-                                graphicTextGap="8"
-                                styleClass="btn-edit"
-                                onAction="#bukaHarga">
-                            <text>Edit Harga</text>
-                            <graphic>
-                                <FontIcon iconLiteral="fas-edit" iconColor="white"/>
-                            </graphic>
-                        </Button>
-                    </HBox>
-
-                    <VBox styleClass="dashboard-card">
-                        <LineChart fx:id="lineChart" title="Transaksi Mingguan">
-                            <xAxis>
-                                <CategoryAxis/>
-                            </xAxis>
-
-                            <yAxis>
-                                <NumberAxis label="Jumlah" />
-                            </yAxis>
-                        </LineChart>
+                            <!-- edit harga -->
+                            <Button prefWidth="180"
+                                    graphicTextGap="8"
+                                    styleClass="btn-edit"
+                                    onAction="#bukaHarga">
+                                <text>Edit Harga</text>
+                                <graphic>
+                                    <FontIcon iconLiteral="fas-edit" iconColor="white"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
                     </VBox>
 
-                    <!-- TABLE -->
-                    <VBox spacing="10"
-                          styleClass="card"
-                          VBox.vgrow="ALWAYS">
+                    <!-- section 3 -->
+                    <VBox spacing="16">
+                        <HBox alignment="CENTER">
+                            <!-- section title -->
+                            <Label text="Ringkasan Grafik"
+                                   styleClass="section-title"/>
 
+                            <Region HBox.hgrow="ALWAYS"></Region>
+
+                            <!-- filter -->
+                            <HBox prefWidth="170"
+                                  maxWidth="170"
+                                  styleClass="chart-filter-box"
+                                  alignment="CENTER">
+                                <ComboBox fx:id="chartFilter"
+                                          styleClass="filter-input"
+                                          prefWidth="162"/>
+                            </HBox>
+                        </HBox>
+
+                        <!-- chart -->
+                        <VBox styleClass="dashboard-card">
+                            <LineChart fx:id="lineChart">
+                                <xAxis>
+                                    <CategoryAxis/>
+                                </xAxis>
+
+                                <yAxis>
+                                    <NumberAxis label="Jumlah" />
+                                </yAxis>
+                            </LineChart>
+                        </VBox>
+                    </VBox>
+
+                    <!-- section 3 -->
+                    <VBox spacing="16" VBox.vgrow="ALWAYS">
+
+                        <!-- section title -->
                         <Label text="Data Transaksi Terbaru"
-                               style="-fx-text-fill: #000;"/>
+                               styleClass="section-title"/>
 
+                        <!-- TABLE -->
                         <TableView fx:id="tableTransaksi"
                                    prefHeight="400"
                                    prefWidth="800">

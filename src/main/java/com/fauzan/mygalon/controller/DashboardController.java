@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -68,12 +70,23 @@ public class DashboardController {
     @FXML
     private TableColumn<Transaksi, String> colTanggal;
 
+    @FXML
+    private ComboBox<String> chartFilter;
 
     ObservableList<Transaksi> list =
             FXCollections.observableArrayList();
 
+    private final XYChart.Series<String, Number> series =
+            new XYChart.Series<>();
+
     @FXML
     private LineChart<String, Number> lineChart;
+
+    //format rupiah
+    NumberFormat rupiah =
+            NumberFormat.getCurrencyInstance(
+                    new Locale("id", "ID")
+            );
 
     private void loadTable(){
         //set ukuran tabel
@@ -216,11 +229,11 @@ public class DashboardController {
     }
 
     public void setPendapatanLabel(int pendapatan) {
-        pendapatanLabel.setText("Rp " + pendapatan);
+        pendapatanLabel.setText(rupiah.format(pendapatan));
     }
 
-    public void loadChart(){
-        XYChart.Series<String, Number> dataChart = new XYChart.Series<>();
+    public void loadChartTransaksi(){
+        series.getData().clear();
 
         String currentWeek = LocalDate.now().minusDays(6).toString();
 
@@ -240,7 +253,7 @@ public class DashboardController {
                 ResultSet data = stmt.executeQuery(sql);
                 ){
 
-            dataChart.setName("Transaksi");
+            series.setName("Transaksi");
 
 
             while(data.next()){
@@ -259,7 +272,7 @@ public class DashboardController {
                                         new Locale("id", "ID")
                                 );
 
-                dataChart.getData().add(new XYChart.Data<>(
+                series.getData().add(new XYChart.Data<>(
                         hari, data.getInt("total")));
             }
         }
@@ -267,11 +280,97 @@ public class DashboardController {
             e.printStackTrace();
         }
 
-        lineChart.getData().clear();
-        lineChart.getData().add(dataChart);
+        lineChart.setTitle("Transaksi Mingguan");
+        lineChart.applyCss();
+        lineChart.layout();
+    }
+
+    public void loadChartPemasukan(){
+        series.getData().clear();
+
+        String currentWeek = LocalDate.now().minusDays(6).toString();
+
+        String sql = """
+            SELECT
+            date(tanggalTransaksi) as tanggal,
+            SUM(totalTransaksi) as total
+            FROM transaksi
+            WHERE date(tanggalTransaksi) >= '%s'
+            GROUP BY date(tanggalTransaksi)
+            ORDER BY tanggal
+        """.formatted(currentWeek);
+
+        try(
+                Connection connection =  DatabaseConn.connect();
+                Statement stmt = connection.createStatement();
+                ResultSet data = stmt.executeQuery(sql);
+        ){
+
+            series.setName("Transaksi");
+
+
+            while(data.next()){
+
+                String day = data.getString("tanggal");
+                int harga = data.getInt("total");
+
+                //convert jadi nama hari
+                LocalDate localDate = LocalDate.parse(day);
+
+                //ambil hari dalam bahasa indonesia
+                String hari =
+                        localDate.getDayOfWeek()
+                                .getDisplayName(
+                                        TextStyle.FULL,
+                                        new Locale("id", "ID")
+                                );
+
+                series.getData().add(new XYChart.Data<>(
+                        hari, data.getInt("total")));
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        lineChart.setTitle("Pemasukan Mingguan");
+
+        lineChart.applyCss();
+        lineChart.layout();
+    }
+
+    public void applyFilter(){
+
+        String filter = chartFilter.getValue();
+
+        if(filter == null){
+            return;
+        }
+
+        switch (filter){
+
+            case "Transaksi Mingguan":
+                loadChartTransaksi();
+                break;
+
+            case "Pemasukan Mingguan":
+                loadChartPemasukan();
+                break;
+
+
+        }
+    }
+
+    public void setFilter(){
+        chartFilter.valueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    applyFilter();
+                });
     }
 
     public void  initialize(){
+
+
         //set tanggal
         today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
@@ -284,7 +383,20 @@ public class DashboardController {
         setJumlahTransaksi();
 
         //panggil chart
-        loadChart();
+        lineChart.setAnimated(false);
+        lineChart.getXAxis().setAnimated(false);
+        lineChart.getYAxis().setAnimated(false);
+        lineChart.getData().add(series);
+        setFilter();
+
+        //filter set
+        chartFilter.getItems().addAll(
+                "Transaksi Mingguan",
+                "Pemasukan Mingguan"
+        );
+        chartFilter.setValue("Transaksi Mingguan");
+
+
 
 //
     }

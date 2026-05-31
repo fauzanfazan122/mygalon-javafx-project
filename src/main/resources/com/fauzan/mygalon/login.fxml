@@ -105,6 +105,11 @@
                 </image>
             </ImageView>
         </StackPane>
+
+        <Label text="MyGalon"
+               styleClass="app-title">
+        </Label>
+
     </VBox>
 
 </HBox>

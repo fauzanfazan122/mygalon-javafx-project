@@ -38,6 +38,8 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- untuk icon -->
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>
@@ -50,11 +52,20 @@
             <version>12.4.0</version>
         </dependency>
 
+        <!-- untuk sqlite -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.50.3.0</version>
         </dependency>
+
+        <!--  untuk pdf  -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>

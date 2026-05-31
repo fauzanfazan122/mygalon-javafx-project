@@ -13,9 +13,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.sql.*;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Optional;
 
 public class TransaksiController {
@@ -100,6 +103,9 @@ public class TransaksiController {
     @FXML
     private TableColumn<Transaksi, Integer> colHargaKirim;
 
+    @FXML
+    private Label formLabel;
+
 //    tombol update
     @FXML
     private Button kirimButton;
@@ -121,6 +127,12 @@ public class TransaksiController {
     ObservableList<Transaksi> list;
 
     FilteredList<Transaksi> filterList;
+
+    //format rupiah
+    NumberFormat rupiah =
+            NumberFormat.getCurrencyInstance(
+                    new Locale("id", "ID")
+            );
 
     public void loadTable(){
 
@@ -320,7 +332,7 @@ public class TransaksiController {
             totalTransaksi = jumlahGalon * currentHargaGalon;
         }
 
-        totalLabel.setText("Rp " + totalTransaksi);
+        totalLabel.setText(rupiah.format(totalTransaksi));
     }
 
     public void initialize(){
@@ -370,6 +382,8 @@ public class TransaksiController {
         loadTable();
         eventSearch();
         eventFilter();
+
+        setFormLabel(modeEdit);
 
         //default filter
         filterSearch.setValue("Terbaru");
@@ -484,6 +498,15 @@ public class TransaksiController {
         tableTransaksi.setItems(filterList);
     }
 
+    private void setFormLabel(boolean modeEdit){
+        if (modeEdit){
+            formLabel.setText("Form Edit Transaksi");
+        }
+        else {
+            formLabel.setText("Form Input Transaksi");
+        }
+    }
+
     //select tabel row
     public void getTableRow(){
         tableTransaksi.getSelectionModel().selectedItemProperty().addListener(
@@ -493,6 +516,7 @@ public class TransaksiController {
                         selectedId = selectedData.getIdTransaksi();
 
                         modeEdit = true;
+
 
 //                        ambil harga sesuai tabel
                         baseHargaGalon = selectedData.getHargaGalon();
@@ -524,6 +548,7 @@ public class TransaksiController {
                         updateTotalLabel();
 
                         setKirimButton();
+                        setFormLabel(true);
                     }
                 });
     }
@@ -742,6 +767,7 @@ public class TransaksiController {
             //update tabel
             loadTable();
 
+            cancelButton();
             labelStatus.getStyleClass().setAll("status-success");
             labelStatus.setManaged(true);
             labelStatus.setVisible(true);
@@ -831,6 +857,8 @@ public class TransaksiController {
 
         modeEdit = false;
         setKirimButton();
+
+        setFormLabel(modeEdit);
     }
 
 }
