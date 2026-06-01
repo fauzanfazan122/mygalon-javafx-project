@@ -63,7 +63,7 @@
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button styleClass="btn-logout">
+                <Button styleClass="btn-logout" onAction="#logout">
                     <text>Logout</text>
                     <graphic>
                         <FontIcon iconLiteral="fas-sign-out-alt" iconColor="white"/>
@@ -199,7 +199,7 @@
 
                                 <Button text="Perbarui"
                                         styleClass="btn-primary"
-                                        onAction="#updateTransaksi"/>
+                                        onAction="#updateHarga"/>
 
                                 <Button styleClass="btn-secondary"
                                         text="Reset"

@@ -17,7 +17,7 @@
 
             scene.getStylesheets().add(Main.class.getResource("style.css").toExternalForm());
 
-            stage.setTitle("MyGalon - pendataan transaksi");
+            stage.setTitle("MyGalon - Sistem Pendataan Transaksi - RM. Fauzan");
             stage.setScene(scene);
             stage.show();
             stage.getIcons().add(

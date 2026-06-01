@@ -697,4 +697,21 @@ public class LaporanController {
         }
     }
 
+    public void logout(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/fauzan/mygalon/login.fxml"));
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) labelStatus.getScene().getWindow();
+
+            setUsername("");
+
+            stage.getScene().setRoot(root);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }

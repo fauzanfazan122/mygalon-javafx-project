@@ -21,7 +21,7 @@ public class HargaController {
     private String username;
 
     private int hargaGalon;
-    private int hargakirim;
+    private int hargaKirim;
 
     private Harga harga;
 
@@ -195,7 +195,7 @@ public class HargaController {
         }
     }
 
-    public void updateTransaksi(){
+    public void updateHarga(){
         //validasi
         if(!validasi()){
             return;
@@ -203,7 +203,7 @@ public class HargaController {
 
         //convert
         hargaGalon = Integer.parseInt(inputHargaGalon.getText());
-        hargakirim = Integer.parseInt(inputHargaKirim.getText());
+        hargaKirim = Integer.parseInt(inputHargaKirim.getText());
 
         String sql = """
             UPDATE harga SET
@@ -216,15 +216,15 @@ public class HargaController {
                 PreparedStatement stmt = connection.prepareStatement(sql);
                 ){
             stmt.setInt(1, hargaGalon);
-            stmt.setInt(2, hargakirim);
+            stmt.setInt(2, hargaKirim);
             stmt.setInt(3, harga.getIdHarga());
             stmt.executeUpdate();
 
             setHargaGalonLabel(hargaGalon);
-            setHargaKirimLabel(hargakirim);
+            setHargaKirimLabel(hargaKirim);
 
             setInputHargaGalon(hargaGalon);
-            setInputHargaKirim(hargakirim);
+            setInputHargaKirim(hargaKirim);
 
             setStatusLabel(true, "Harga Berhasil di perbarui!");
         }
@@ -236,5 +236,22 @@ public class HargaController {
     public void resetInput(){
         setInputHargaGalon(0);
         setInputHargaKirim(0);
+    }
+
+    public void logout(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/fauzan/mygalon/login.fxml"));
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) statusLabel.getScene().getWindow();
+
+            setUsername("");
+
+            stage.getScene().setRoot(root);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

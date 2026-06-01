@@ -69,7 +69,7 @@
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button onAction="#keluar"
+                <Button onAction="#logout"
                         styleClass="btn-logout">
                     <text>Logout</text>
                     <graphic>
