@@ -24,6 +24,7 @@ import com.lowagie.text.Document;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -485,28 +486,35 @@ public class LaporanController {
                     }
             );
 
-            //buat logo/watermark
-            com.lowagie.text.Image logo =
-                    com.lowagie.text.Image.getInstance(
-                            getClass()
-                                    .getResource("/com/fauzan/mygalon/assets/logo-horizontal.png")
-                                    .toExternalForm()
-                    );
-            logo.scaleToFit(50, 30);
-
             //title
             PdfPCell titleCell = new PdfPCell(Phrase.getInstance("Laporan Transaksi Depot Air Minum Isi Ulang Prabu"));
             titleCell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
             titleCell.setBorder(PdfPCell.NO_BORDER);
 
+            //buat logo/watermark
+            URL url = getClass().getResource("/com/fauzan/mygalon/assets/logo-horizontal.png");
 
-            //logo
-            PdfPCell logoCell = new PdfPCell(logo);
-            logoCell.setBorder(PdfPCell.NO_BORDER);
-            logoCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
+            if(url != null){
+                com.lowagie.text.Image logo =
+                        com.lowagie.text.Image.getInstance(url.toExternalForm());
+                logo.scaleToFit(50, 30);
 
-            tableTitle.addCell(titleCell);
-            tableTitle.addCell(logoCell);
+                //logo
+                PdfPCell logoCell = new PdfPCell(logo);
+                logoCell.setBorder(PdfPCell.NO_BORDER);
+                logoCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
+
+                tableTitle.addCell(titleCell);
+                tableTitle.addCell(logoCell);
+            }
+            else {
+                //logo
+                PdfPCell emptyCell = new PdfPCell();
+                emptyCell.setBorder(PdfPCell.NO_BORDER);
+
+                tableTitle.addCell(titleCell);
+                tableTitle.addCell(emptyCell);
+            }
 
             //simpan file
             PdfWriter.getInstance(
@@ -543,9 +551,14 @@ public class LaporanController {
             }
             document.add(table);
             document.close();
+
+            setStatusLabel(true, "Laporan berhasil dicetak!");
+
+
         }
         catch(Exception e){
             e.printStackTrace();
+            setStatusLabel(false, "Gagal membuat PDF");
         }
 
     }
@@ -599,7 +612,7 @@ public class LaporanController {
                 laporanData.add(transaksi);
             }
             buatPdf();
-            setStatusLabel(true, "Laporan berhasil dicetak!");
+
         }
         catch (Exception e){
             e.printStackTrace();
